@@ -69,9 +69,9 @@ document.addEventListener('DOMContentLoaded', () => {
         totalQuestionsAnswered: 0,
         startTime: null,
         endTime: null,
-        timePerQuestion: 50, // 50 seconds per question
+        timePerQuestion: 30, // 30 seconds per question
         currentTimer: null,
-        timeLeft: 50,
+        timeLeft: 30,
         tabSwitches: 0,
         examInProgress: false,
         answerMode: 'multiple-choice', // or 'text-input'
