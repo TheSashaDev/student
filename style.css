@@ -168,6 +168,7 @@ body::-webkit-scrollbar {
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
     margin: 0 auto;
     max-width: 400px;
+    font-family: 'Montserrat', sans-serif; /* Added font family */
     animation: pulse-submit 2s infinite ease-in-out;
 }
 
@@ -617,17 +618,6 @@ body {
     cursor: pointer;
 }
 
-/* Navigation buttons */
-.navigation-buttons {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    padding: 15px 20px;
-    background-color: var(--card-bg);
-    border-radius: 0 0 10px 10px;
-}
-
 .nav-button {
     background-color: var(--primary-color);
     color: white;
@@ -655,26 +645,6 @@ body {
     border-radius: 3px;
     margin: 0 15px;
     overflow: hidden;
-}
-
-/* Add styles for the new question count indicator */
-.question-count-indicator {
-    text-align: center;
-    margin: 15px 0;
-    padding: 10px;
-    background-color: var(--card-bg);
-    border-radius: 8px;
-    font-weight: bold;
-}
-
-.question-count-indicator span {
-    font-size: 1.1rem;
-}
-
-.progress-info {
-    font-size: 0.85rem;
-    color: var(--accent-color);
-    margin-top: 5px;
 }
 
 /* Results screen styles */

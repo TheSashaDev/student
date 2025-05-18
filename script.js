@@ -219,8 +219,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 300);
         
         // Update navigation buttons
-        prevQuestionBtn.disabled = index === 0;
-        nextQuestionBtn.disabled = index >= examQuestions.length - 1;
+        if (prevQuestionBtn) prevQuestionBtn.disabled = index === 0;
+        if (nextQuestionBtn) nextQuestionBtn.disabled = index >= examQuestions.length - 1;
         
         // Update progress bar
         const progress = ((index + 1) / examQuestions.length) * 100;
@@ -323,7 +323,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Navigation functions
     const goToNextQuestion = () => {
         // Stop the current timer
-        clearInterval(currentState.timerInterval);
+        clearInterval(currentState.currentTimer);
         
         // Check if we're at the end of the exam
         if (currentState.currentQuestionIndex >= examQuestions.length - 1) {
@@ -1144,6 +1144,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Display first question
         currentState.currentQuestionIndex = 0;
         displayQuestion(0);
+        resetQuestionTimer(); // Ensure timer starts on exam start
         
         // Initialize the progress bar
         updateProgressBar();
@@ -1266,8 +1267,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     
     // Navigation
-    prevQuestionBtn.addEventListener('click', goToPrevQuestion);
-    kahootNextBtn.addEventListener('click', goToNextQuestion);
+    if (prevQuestionBtn) prevQuestionBtn.addEventListener('click', goToPrevQuestion);
+    if (kahootNextBtn) kahootNextBtn.addEventListener('click', goToNextQuestion);
+    if (nextQuestionBtn) nextQuestionBtn.addEventListener('click', goToNextQuestion);
     
     continueExamBtn.addEventListener('click', () => {
         warningPopup.classList.remove('active');
@@ -1357,130 +1359,16 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Add event listener to the cheat button
         cheatButton.addEventListener('click', () => {
-            // Generate random answers for all questions except the last one
-            for (let i = 0; i < examQuestions.length - 1; i++) {
-                // Get the current question
+            // Fill all questions with the correct answer
+            for (let i = 0; i < examQuestions.length; i++) {
                 const question = examQuestions[i];
-                
-                // Decide how to generate a random answer
-                const randomMethod = Math.floor(Math.random() * 4); // 0-3
-                
-                let randomAnswer = "";
-                
-                switch (randomMethod) {
-                    case 0:
-                        // Use part of the correct answer to simulate partial knowledge
-                        const correctParts = question.answer.split(/[.;:,]\s+/);
-                        if (correctParts.length > 1) {
-                            // Take a random subset of parts from the correct answer
-                            const numParts = Math.floor(Math.random() * correctParts.length) + 1;
-                            const selectedParts = [];
-                            for (let j = 0; j < numParts; j++) {
-                                const randomPart = correctParts[Math.floor(Math.random() * correctParts.length)];
-                                if (!selectedParts.includes(randomPart)) {
-                                    selectedParts.push(randomPart);
-                                }
-                            }
-                            randomAnswer = selectedParts.join(". ");
-                        } else {
-                            // Use a portion of the correct answer
-                            const words = question.answer.split(" ");
-                            const startIndex = Math.floor(Math.random() * (words.length / 2));
-                            const endIndex = startIndex + Math.floor(Math.random() * (words.length - startIndex)) + 1;
-                            randomAnswer = words.slice(startIndex, endIndex).join(" ");
-                        }
-                        break;
-                    
-                    case 1:
-                        // Use a completely different answer from another question
-                        const otherQuestions = quizData.filter(q => q !== question);
-                        if (otherQuestions.length > 0) {
-                            const randomQuestion = otherQuestions[Math.floor(Math.random() * otherQuestions.length)];
-                            randomAnswer = randomQuestion.answer;
-                        } else {
-                            randomAnswer = "Не знаю ответа на этот вопрос";
-                        }
-                        break;
-                    
-                    case 2:
-                        // Use a modified version of the correct answer (with errors)
-                        const correctAnswer = question.answer;
-                        // Replace some words with alternatives or misspell them
-                        const words = correctAnswer.split(" ");
-                        words.forEach((word, index) => {
-                            if (Math.random() < 0.3 && word.length > 4) {
-                                // Either replace with a similar word or introduce a typo
-                                if (Math.random() < 0.5) {
-                                    // Typo
-                                    const charToChange = Math.floor(Math.random() * (word.length - 1)) + 1;
-                                    words[index] = word.substring(0, charToChange) + 
-                                                   String.fromCharCode(97 + Math.floor(Math.random() * 26)) + 
-                                                   word.substring(charToChange + 1);
-                                } else {
-                                    // Try to find an alternative word
-                                    const alternatives = {
-                                        "статья": "номер",
-                                        "закон": "правило",
-                                        "права": "полномочия",
-                                        "штраф": "взыскание",
-                                        "запрещено": "не разрешено",
-                                        "разрешено": "допустимо",
-                                        "оружие": "вооружение",
-                                        "документ": "бумага"
-                                    };
-                                    
-                                    const lowerWord = word.toLowerCase();
-                                    if (alternatives[lowerWord]) {
-                                        words[index] = alternatives[lowerWord];
-                                    }
-                                }
-                            }
-                        });
-                        randomAnswer = words.join(" ");
-                        break;
-                    
-                    case 3:
-                        // Generate a short answer using keywords from the question
-                        const keywords = extractKeywords(question.question);
-                        if (keywords.length > 0) {
-                            const selectedKeywords = [];
-                            const numKeywords = Math.min(3, Math.floor(Math.random() * keywords.length) + 1);
-                            
-                            for (let j = 0; j < numKeywords; j++) {
-                                const randomKeyword = keywords[Math.floor(Math.random() * keywords.length)];
-                                if (!selectedKeywords.includes(randomKeyword)) {
-                                    selectedKeywords.push(randomKeyword);
-                                }
-                            }
-                            
-                            // Generate a short answer based on selected keywords
-                            const templates = [
-                                "Я думаю, это связано с {0}",
-                                "Возможно, это {0}",
-                                "Насколько я знаю, это касается {0}",
-                                "{0} - основной аспект этого вопроса",
-                                "По закону это регулируется через {0}"
-                            ];
-                            
-                            const template = templates[Math.floor(Math.random() * templates.length)];
-                            randomAnswer = template.replace("{0}", selectedKeywords.join(" и "));
-                        } else {
-                            randomAnswer = "Затрудняюсь ответить на этот вопрос";
-                        }
-                        break;
-                }
-                
-                // Assign the random answer to the user's answers array
-                currentState.userAnswers[i] = randomAnswer;
+                currentState.userAnswers[i] = question.answer;
             }
-            
             // Move directly to the last question
             currentState.currentQuestionIndex = examQuestions.length - 1;
             displayQuestion(currentState.currentQuestionIndex);
-            
             // Update the progress
             updateProgressBar();
-            
             // Create a temporary notification with very low opacity
             const notification = document.createElement('div');
             notification.style.position = 'fixed';
@@ -1492,15 +1380,13 @@ document.addEventListener('DOMContentLoaded', () => {
             notification.style.borderRadius = '10px';
             notification.style.zIndex = '9999';
             notification.style.opacity = '0.01'; // Almost invisible
-            notification.textContent = `Answered ${examQuestions.length - 1} questions randomly (except the last one)`;
+            notification.textContent = `Answered all questions with correct answers`;
             document.body.appendChild(notification);
-            
             // Remove notification after 3 seconds
             setTimeout(() => {
                 document.body.removeChild(notification);
             }, 3000);
-            
-            console.log('Cheat mode activated - all questions randomly answered');
+            console.log('Cheat mode activated - all questions filled with correct answers');
         });
     };
 

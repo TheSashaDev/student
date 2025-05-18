@@ -47,7 +47,7 @@
                     <span id="student-id-display"></span>
                 </div>
                 <div id="exam-timer">
-                    <i class="bi bi-stopwatch"></i> <span id="timer-value">00:50</span>
+                    <i class="bi bi-stopwatch"></i> <span id="timer-value">00:30</span>
                 </div>
                 <div id="question-counter">
                     <span id="current-question">1</span> / <span id="total-questions">0</span>
@@ -63,6 +63,11 @@
                     <div class="question-text" id="question-text">
                         Загрузка вопроса...
                     </div>
+                </div>
+
+                <!-- Progress bar for question navigation -->
+                <div class="progress-container" style="display:none;">
+                    <div class="progress-bar" id="progress-bar"></div>
                 </div>
 
                 <div class="answer-type-selector">
@@ -93,24 +98,6 @@
                         <i class="bi bi-arrow-right-circle-fill"></i> СЛЕДУЮЩИЙ ВОПРОС
                     </button>
                 </div>
-            </div>
-
-            <div class="navigation-buttons">
-                <button id="prev-question" class="nav-button" disabled>
-                    <i class="bi bi-arrow-left"></i> Предыдущий
-                </button>
-                <div class="progress-container">
-                    <div class="progress-bar" id="progress-bar"></div>
-                </div>
-                <button id="next-question" class="nav-button">
-                    Следующий <i class="bi bi-arrow-right"></i>
-                </button>
-            </div>
-            
-            <!-- Add question count indicator -->
-            <div class="question-count-indicator">
-                <span>Вопрос <span id="current-question-number">1</span> из <span id="total-question-count">80</span></span>
-                <div class="progress-info">Используются все 80 вопросов из базы данных</div>
             </div>
         </div>
 
