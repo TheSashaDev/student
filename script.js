@@ -69,9 +69,9 @@ document.addEventListener('DOMContentLoaded', () => {
         totalQuestionsAnswered: 0,
         startTime: null,
         endTime: null,
-        timePerQuestion: 30, // 30 seconds per question
+        timePerQuestion: 50, // 50 seconds per question
         currentTimer: null,
-        timeLeft: 30,
+        timeLeft: 50,
         tabSwitches: 0,
         examInProgress: false,
         answerMode: 'multiple-choice', // or 'text-input'
@@ -83,7 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
             lastPasteTime: null,             // For paste detection
             recentMouseActivity: 0,          // Monitor mouse movements
             tabSwitchWarningCount: 0,        // Track how many tab switch warnings received
-            maxAllowedTabSwitches: 2,        // Maximum number of tab switches before ban
+            maxAllowedTabSwitches: 1,        // Maximum number of tab switches before ban
             rapidAnswerThreshold: 500,       // Milliseconds threshold for detecting bot-like behavior
             suspicious: false                // Flag if behavior seems suspicious
         }
